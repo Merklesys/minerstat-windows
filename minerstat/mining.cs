@@ -632,7 +632,7 @@ namespace minerstat
                             string[] fanArray = explode(" ", fan);
                             string[] powerArray = explode(" ", powerlimit);
 
-                            for (int i = 0; i < 16; i++)
+                            for (int i = 0; i <= 16; i++)
                             {
                                 coreclock = coreArray[i];
                                 memoryclock = memoryArray[i];
