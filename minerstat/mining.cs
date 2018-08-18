@@ -1,4 +1,4 @@
-﻿using MSI.Afterburner;
+﻿//using MSI.Afterburner;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -29,7 +29,7 @@ namespace minerstat
         private static string cpuVersion;
         private static WebClient wc = new WebClient();
         private static string github_version_file = "https://raw.githubusercontent.com/minerstat/minerstat-windows/master/versionStable.txt";
-        public static HardwareMonitor mahm = new HardwareMonitor();
+       // public static HardwareMonitor mahm = new HardwareMonitor();
 
         // EXPLODE
         public static string[] explode(string separator, string source)
@@ -632,7 +632,7 @@ namespace minerstat
                             string[] fanArray = explode(" ", fan);
                             string[] powerArray = explode(" ", powerlimit);
 
-                            for (int i = 0; i < mahm.Header.GpuEntryCount; i++)
+                            for (int i = 0; i < 16; i++)
                             {
                                 coreclock = coreArray[i];
                                 memoryclock = memoryArray[i];
@@ -644,7 +644,10 @@ namespace minerstat
                                 if (powerlimit.Equals("skip")) { powerlimit = "9999"; }
                                 if (fan.Equals("skip")) { fan = "9999"; }
 
-                                clocktune.Advanced(minerType, Convert.ToInt32(powerlimit), Convert.ToInt32(coreclock), Convert.ToInt32(fan), Convert.ToInt32(memoryclock), i);
+                                if (!string.IsNullOrWhiteSpace(coreclock))
+                                {
+                                    clocktune.Advanced(minerType, Convert.ToInt32(powerlimit), Convert.ToInt32(coreclock), Convert.ToInt32(fan), Convert.ToInt32(memoryclock), i);
+                                }
                             }
 
                         } else
