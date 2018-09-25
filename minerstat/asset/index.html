@@ -60,7 +60,7 @@
         <div class="main">
             <div class="left">
                 <div class="logo">
-                    <div class="version">v4.0.7</div>
+                    <div class="version">v4.0.8</div>
                 </div>
                 <div class="divider"></div>
                 <div id="mining_data" style="display:none;">
@@ -324,13 +324,13 @@
                                             //if (workerData.info.status == 'online') {
                                             if (data != '' && workerData.info.status == 'online') {
 
-                                                $('#mining > b').html(workerData.mining.hashrate.hashrate + " " + workerData.mining.hashrate.hashrate_unit);
+                                                $('#mining > b').html(Math.round(workerData.mining.hashrate.hashrate * 100) / 100 + " " + workerData.mining.hashrate.hashrate_unit);
                                                 $('#mining > small').html(workerData.mining.crypto);
                                                 if (workerData.mining.crypto_dual != '') {
-                                                    $('#dual_mining > b').html(workerData.mining.hashrate.hashrate_dual + " " + workerData.mining.hashrate.hashrate_unit_dual);
+                                                    $('#dual_mining > b').html(Math.round(workerData.mining.hashrate.hashrate_dual * 100) / 100 + " " + workerData.mining.hashrate.hashrate_unit_dual);
                                                     $('#dual_mining > small').html(workerData.mining.crypto_dual);
                                                 }
-                                                $('#earnings').html(workerData.revenue.usd_day);
+                                                $('#earnings').html(Math.round(workerData.revenue.usd_day * 100) / 100);
 
                                                 // Calculate max. temp & fan
                                                 var maxTemp = 0;

@@ -10,7 +10,9 @@ using System.Net.Http;
 using System.Windows.Forms;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
-
+using WebSocketSharp;
+using Newtonsoft.Json;
+using System.Reflection;
 
 namespace minerstat
 {
@@ -23,6 +25,8 @@ namespace minerstat
         public static string apiCpu;
         private static readonly HttpClient client = new HttpClient();
         public static PerformanceCounter ramCounter;
+        private static WebSocket wclient;
+        const string host = "wss://minerstat.com:2096/windows";
 
         [DllImport("user32")]
         public static extern bool ExitWindowsEx(uint uFlags, uint dwReason);
@@ -30,8 +34,33 @@ namespace minerstat
         [DllImport("user32")]
         public static extern void LockWorkStation();
 
+        public class API
+        {
+            public string token { get; set; }
+            public string worker { get; set; }
+            public string workerData { get; set; }
+            public string minerData { get; set; }
+            public string hwData { get; set; }
+            public string cpuData { get; set; }
+        }
+
+        public class WORKERAPI
+        {
+            public string miner { get; set; }
+            public string version { get; set; }
+            public string cpu { get; set; }
+            public string cpud { get; set; }
+            public string os { get; set; }
+            public string space { get; set; }
+            public string freemem { get; set; }
+            public string localip { get; set; }
+            public string remoteip { get; set; }
+            public string currentcpu { get; set; }
+        }
+
         async public static void loop(object sender, ElapsedEventArgs exw)
         {
+            wclient = new WebSocket(host);
 
             try
             {         
@@ -59,6 +88,12 @@ namespace minerstat
                         Program.connectionError = false;
 
 
+                        // CHECK IP
+                        if (Program.currentIP.Equals("0.0.0.0"))
+                        {
+                            Program.currentIP = modules.GetUserIP();
+                        }
+
                         // 1) PREPARE THE URL'S if Needed
                         switch (mining.minerDefault.ToLower())
                         {
@@ -67,6 +102,12 @@ namespace minerstat
                                 break;
                             case "xmr-stak":
                                 monitorURL = "http://127.0.0.1:2222/api.json";
+                                break;
+                            case "xmrig-amd":
+                                monitorURL = "http://127.0.0.1:4028/";
+                                break;
+                            case "wildrig-multi":
+                                monitorURL = "http://127.0.0.1:4028/";
                                 break;
                             case "trex":
                                 monitorURL = "http://127.0.0.1:4068/summary";
@@ -82,13 +123,13 @@ namespace minerstat
                                 break;
                         }
 
-
+                        
                         // 2) Fetch API's
                         if (mining.minerDefault.ToLower().Contains("ccminer") || mining.minerDefault.ToLower().Contains("cryptodredge") || mining.minerDefault.ToLower().Contains("z-enemy")) { modules.getStat(); }
                         if (mining.minerDefault.ToLower().Contains("ewbf")) { modules.getStat_ewbf(); }
                         if (mining.minerDefault.ToLower().Contains("zm-zec")) { modules.getStat_zm(); }
                         if (mining.minerDefault.ToLower().Contains("phoenix-eth") || mining.minerDefault.ToLower().Contains("claymore")) { modules.getStat_claymore(); }
-                        if (mining.minerDefault.ToLower().Contains("ethminer")) { modules.getStat_ethminer(); }
+                        if (mining.minerDefault.ToLower().Contains("ethminer") || mining.minerDefault.ToLower().Contains("progpowminer")) { modules.getStat_ethminer(); }
                         if (mining.minerDefault.ToLower().Contains("sgminer")) { modules.getStat_sgminer(); }
                         if (mining.minerDefault.ToLower().Contains("gateless")) { modules.getStat_sgminer(); }
                         if (mining.minerDefault.ToLower().Contains("cast-xmr") || mining.minerDefault.ToLower().Contains("xmr-stak") || mining.minerDefault.ToLower().Contains("bminer") || mining.minerDefault.ToLower().Contains("trex") || mining.minerDefault.ToLower().Contains("lolminer") || mining.minerDefault.ToLower().Contains("srbminer"))
@@ -157,58 +198,96 @@ namespace minerstat
                             try
                             {
 
-                                var postValue = new Dictionary<string, string>
-                        {
-                        { "minerData", apiResponse },
-                        { "hwData", apiHardware },
-                        { "cpuData", apiCpu }
-                        };
+                            var ramCount = "0";
+                            try
+                            {
+                                ramCounter = new PerformanceCounter("Memory", "Available MBytes", true);
+                                ramCount = Convert.ToInt32(ramCounter.NextValue()).ToString();
+                            }
+                            catch (Exception) { }
 
-                                var content = new FormUrlEncodedContent(postValue);
-                                var ramCount = "0";
+                            WORKERAPI WORKERAPI = new WORKERAPI
+                            {
+                                miner = mining.minerDefault.ToLower(),
+                                version = Assembly.GetExecutingAssembly().GetName().Version.ToString(),
+                                cpu = mining.minerCpu,
+                                cpud = "HASH",
+                                currentcpu = mining.cpuDefault.ToLower(),
+                                freemem = ramCount,
+                                localip = modules.GetLocalIPAddress(),
+                                remoteip = Program.currentIP,
+                                space = "" + modules.GetTotalFreeSpace("C") / 1000000,
+                                os = "win"
+                            };
+
+                            API API = new API
+                            {
+                                token = Program.token,
+                                worker = Program.worker,
+                                workerData = JsonConvert.SerializeObject(WORKERAPI),
+                                minerData = apiResponse,
+                                hwData = apiHardware,
+                                cpuData = apiCpu
+                            };
+
+                            /*******                            
+                            WEBSOCKETS 
+                            **********/
+
+                            //wclient.OnOpen += (ss, ee) => Program.NewMessage("connect: " + host, "");
+                            wclient.OnError += (ss, ee) =>
+                            {
+                                Program.NewMessage(ee.Message, "");
+                                wclient.Close();
+                            };
+                            wclient.OnMessage += (ss, ee) =>
+                            {
+                                var apiError = "";
+                                if (apiResponse.Equals(""))
+                                {
+                                    apiError = "(MINER ERROR)";
+                                }
+
                                 try
-                                {
-                                    ramCounter = new PerformanceCounter("Memory", "Available MBytes", true);
-                                    ramCount = Convert.ToInt32(ramCounter.NextValue()).ToString();
-                                }
-                                catch (Exception) { }
-
-                                var response = await client.PostAsync("https://api.minerstat.com/v2/set_node_config.php?token=" + Program.token + "&worker=" + Program.worker + "&miner=" + mining.minerDefault.ToLower() + "&ver=4.0.6&cpuu=" + mining.minerCpu + "&cpud=HASH" + "&os=win" + "&algo=&best=&space=" + modules.GetTotalFreeSpace("C") / 1000000 + "&freemem=" + ramCount + "&localip=" + modules.GetLocalIPAddress() + "&remoteip=" + modules.GetUserIP() + "&currentcpu=" + mining.cpuDefault.ToLower(), content);
-                                var responseString = await response.Content.ReadAsStringAsync();
-
-                                if (!responseString.Equals(""))
-                                {
-                                    Program.NewMessage("REMOTE COMMAND => " + responseString, "");
-                                    RemoteCommand(responseString);
-                                }
-
-                              
-                                 try
                                 {
                                     int package = (apiHardware.Length + apiResponse.Length + apiCpu.Length) * sizeof(Char);
                                     modules.updateTraffic(package);
-                                    Program.NewMessage("SYNC => API Updated [ ~ " + (package / 1000) + " KB ]", "INFO");
-                                } catch (Exception)
+                                    Program.NewMessage("SYNC => API Updated "+apiError+" [ ~ " + (package / 1000) + " KB ]", "INFO");
+                                }
+                                catch (Exception)
                                 {
-                                    Program.NewMessage("SYNC => API Updated [ ~ 1 KB ]", "INFO");
+                                    Program.NewMessage("SYNC => API Updated " + apiError + " [ ~ 1 KB ]", "INFO");
                                     modules.updateTraffic(1);
                                 }
 
+                                if (!ee.Data.Equals("null"))
+                                {
+                                    Program.NewMessage("REMOTE COMMAND => " + ee.Data, "");
+                                    RemoteCommand(ee.Data);
+                                }
+                                wclient.Close();
+                            };
+                            //wclient.OnClose += (ss, ee) => Program.NewMessage(host, "");
+
+                            wclient.Connect();
+                            File.WriteAllText(@Program.minerstatDir + "/test.json", JsonConvert.SerializeObject(API));
+    
+                            wclient.Send(JsonConvert.SerializeObject(API));
+
+                            if (apiResponse.Equals(""))
+                            {
+                                Program.NewMessage("ERROR => UNABLE TO FETCH MINER API.", "");
                             }
-                            catch (Exception ex) { Program.NewMessage("ERROR => " + ex.ToString(), ""); }                       
-
-                    }
-
-
+                         
+                            }
+                            catch (Exception ex) { Program.NewMessage("ERROR => " + ex.ToString(), ""); }
+                    }                
                 }
-
             }
             catch (Exception error)
             {
                 Program.NewMessage("ERROR => " + error.ToString(), "");
             }
-
-
         }
 
         async public static void RemoteCommand(string command)
@@ -219,7 +298,7 @@ namespace minerstat
                 mining.killAll();
                 Program.watchDogs.Stop();
                 Program.syncLoop.Stop();
-                await Task.Delay(1000);
+                await Task.Delay(1500);
                 mining.Start();
             }
 
@@ -229,7 +308,7 @@ namespace minerstat
                 Program.watchDogs.Stop();
                 Program.syncLoop.Stop();
                 Program.NewMessage("SYSTEM => REBOOT in 1 sec", "");
-                await Task.Delay(1000);
+                await Task.Delay(1500);
                 var psi = new ProcessStartInfo("shutdown", "/r /f /t 0");
                 psi.CreateNoWindow = true;
                 psi.UseShellExecute = false;
@@ -242,7 +321,7 @@ namespace minerstat
                 Program.watchDogs.Stop();
                 Program.syncLoop.Stop();
                 Program.NewMessage("SYSTEM => SHUTDOWN in 1 sec", "");
-                await Task.Delay(1000);
+                await Task.Delay(1500);
                 var psi = new ProcessStartInfo("shutdown", "/s /f /t 0");
                 psi.CreateNoWindow = true;
                 psi.UseShellExecute = false;

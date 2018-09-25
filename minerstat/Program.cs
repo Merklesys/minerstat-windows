@@ -1,4 +1,5 @@
 ﻿using CefSharp;
+using CefSharp.WinForms;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
@@ -29,7 +30,7 @@ namespace minerstat {
   public static string worker;
 
   // minerstat Direcories
-  public static string currentDir;
+  public static string currentDir,currentIP;
   public static string tempDir;
   public static string minerstatDir;
 
@@ -66,7 +67,7 @@ namespace minerstat {
   [STAThread]
   static void Main(string[] args) {
 
-            if (args.Length == 0)
+            if (args.Length != 0)
             {
                 MessageBox.Show("ERROR => Please, Start with minerstat.exe");
                 Application.Exit();
@@ -113,19 +114,20 @@ namespace minerstat {
                 suffix = "byte";
                 totalTraffic = 0;
                 StartDelayOver = true;
+                currentIP = "0.0.0.0";
 
                 // Open hardware monitor
                 Random random = new Random();
                 monitorport = random.Next(8600, 8700);
 
                 // Initalize Watchdog
-                watchDogs = new System.Timers.Timer(TimeSpan.FromSeconds(5).TotalMilliseconds); // set the time (5 sec in this case)
+                watchDogs = new System.Timers.Timer(TimeSpan.FromSeconds(15).TotalMilliseconds); // set the time (15 sec in this case)
                 watchDogs.AutoReset = true;
                 watchDogs.Elapsed += new System.Timers.ElapsedEventHandler(watchDog.health);
                 watchDogFailover = 0;
 
                 // Initalize Syncing
-                syncLoop = new System.Timers.Timer(TimeSpan.FromSeconds(30).TotalMilliseconds); // set the time (0.5 min in this case)
+                syncLoop = new System.Timers.Timer(TimeSpan.FromSeconds(15).TotalMilliseconds); // set the time (0.5 min in this case)
                 syncLoop.AutoReset = true;
                 syncLoop.Elapsed += new System.Timers.ElapsedEventHandler(sync.loop);
 

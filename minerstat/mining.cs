@@ -55,6 +55,7 @@ namespace minerstat
                     try
                     {
                         System.Diagnostics.Process.Start("taskkill", "/F /IM powershell.exe /T");
+                        System.Diagnostics.Process.Start("taskkill", "/F /IM "+ getProcessName().ToLower() + ".exe /T");
                     }
                     catch (Exception)
                     {
@@ -93,6 +94,12 @@ namespace minerstat
         public static string getProcessName()
         {
             string process = "unknown";
+            string gpuType = "amd";
+
+            if (minerType.Equals("nvidia"))
+            {
+                gpuType = "cuda";
+            }
 
             switch (minerDefault.ToLower())
             {
@@ -170,6 +177,15 @@ namespace minerstat
                     break;
                 case "srbminer":
                     process = "srbminer-cn";
+                    break;
+                case "progpowminer":
+                    process = "progpowminer-" + gpuType;
+                    break;
+                case "xmrig-amd":
+                    process = "xmrig-amd";
+                    break;
+                case "wildrig-multi":
+                    process = "wildrig";
                     break;
             }
 
@@ -295,8 +311,11 @@ namespace minerstat
                 if (!File.Exists(Program.currentDir + "/clients/" + minerDefault.ToLower() + "/minerUpdated.txt") && !File.Exists(Program.minerstatDir + "/buffer.txt") || !localMinerVersion.Equals(minerVersion) && !File.Exists(Program.minerstatDir + "/buffer.txt"))
                 {
 
+                    // ECHO  WORK IN PROGRESS
+                    Program.NewMessage("INFO => Preparing to download new version of: " + minerDefault.ToLower(), "");
+
                     // DELETE ALL FILES
-                    System.IO.DirectoryInfo di = new DirectoryInfo(Program.currentDir + "/clients/" + minerDefault.ToLower() + "/");
+                    System.IO.DirectoryInfo di = new DirectoryInfo(Program.currentDir + "/clients/");
 
                     foreach (FileInfo file in di.GetFiles())
                     {
@@ -307,9 +326,21 @@ namespace minerstat
                         dir.Delete(true);
                     }
 
+                    await Task.Delay(1000);
+
+                    Directory.Delete("clients", true);
+
+                    await Task.Delay(500);
+
+                    if (!Directory.Exists(Program.currentDir + "/clients/" + minerDefault.ToLower() + "/"))
+                    {
+                        Directory.CreateDirectory(Program.currentDir + "/clients/" + minerDefault.ToLower() + "/");
+                    }
+
                     Downloader.minerVersion = minerVersion;
 
                     // DOWNLOAD FRESH PACKAGE
+                    await Task.Delay(6500);
                     Downloader.downloadFile(minerDefault.ToLower() + ".zip", minerDefault.ToLower(), "main");
                     Program.SyncStatus = false;
 

@@ -194,10 +194,13 @@ namespace minerstat
 
         public static string GetUserIP()
         {
-            try
-            {
-                string ipList = System.Net.Dns.GetHostEntry(System.Net.Dns.GetHostName()).AddressList.GetValue(0).ToString();
-                return ipList;
+            try {
+                string IP = "0.0.0.0";
+                using (WebClient client = new WebClient())
+                {
+                    IP = client.DownloadString("https://api.ipify.org/");
+                }
+                return IP;
             } catch(Exception ex)
             {
                 return "0.0.0.0";
@@ -363,7 +366,7 @@ namespace minerstat
             catch (Exception value)
             {
 
-                Program.NewMessage("WATCHDOG: Ewbf 0Sol/s or not started ?!", "ERROR");           
+                //Program.NewMessage("WATCHDOG: Ewbf 0Sol/s or not started ?!", "ERROR");           
                 Program.NewMessage(value.ToString().Substring(0, 42) + "...", "ERROR");
 
             }
@@ -389,7 +392,7 @@ namespace minerstat
             }
             catch (Exception value)
             {
-                Program.NewMessage("WATCHDOG: Claymore not started ?!", "ERROR");
+                //Program.NewMessage("WATCHDOG: Claymore not started ?!", "ERROR");
                 Program.NewMessage(value.ToString().Substring(0, 42) + "...", "ERROR");
             }
             return result;
@@ -414,7 +417,7 @@ namespace minerstat
             }
             catch (Exception value)
             {
-                Program.NewMessage("WATCHDOG: Claymore not started ?!", "ERROR");
+                //Program.NewMessage("WATCHDOG: Claymore not started ?!", "ERROR");
                 Program.NewMessage(value.ToString().Substring(0, 42) + "...", "ERROR");
             }
             return result;
