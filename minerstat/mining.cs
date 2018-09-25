@@ -328,7 +328,7 @@ namespace minerstat
 
                     await Task.Delay(1000);
 
-                    Directory.Delete("clients", true);
+                    Directory.Delete(Program.currentDir + "/clients", true);
 
                     await Task.Delay(500);
 
