@@ -215,9 +215,9 @@ namespace minerstat
 
         public static void StartUpdate()
         {
-            if (!File.Exists("minerstat.exe"))
+            if (!File.Exists(@Program.currentDir + "/minerstat.exe"))
             {
-                MessageBox.Show("Main program file doesn't exist, try reinstalling or update the app.");
+                Program.NewMessage("Main program file doesn't exist, try reinstalling or update the app.", "");
                 Application.Exit();
             }
             ProcessStartInfo Info = new ProcessStartInfo();
