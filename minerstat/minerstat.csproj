@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\packages\CefSharp.WinForms.65.0.1\build\CefSharp.WinForms.props" Condition="Exists('..\packages\CefSharp.WinForms.65.0.1\build\CefSharp.WinForms.props')" />
-  <Import Project="..\packages\CefSharp.Common.65.0.1\build\CefSharp.Common.props" Condition="Exists('..\packages\CefSharp.Common.65.0.1\build\CefSharp.Common.props')" />
+  <Import Project="..\packages\CefSharp.WinForms.65.0.0\build\CefSharp.WinForms.props" Condition="Exists('..\packages\CefSharp.WinForms.65.0.0\build\CefSharp.WinForms.props')" />
+  <Import Project="..\packages\CefSharp.Common.65.0.0\build\CefSharp.Common.props" Condition="Exists('..\packages\CefSharp.Common.65.0.0\build\CefSharp.Common.props')" />
   <Import Project="..\packages\cef.redist.x86.3.3325.1758\build\cef.redist.x86.props" Condition="Exists('..\packages\cef.redist.x86.3.3325.1758\build\cef.redist.x86.props')" />
   <Import Project="..\packages\cef.redist.x64.3.3325.1758\build\cef.redist.x64.props" Condition="Exists('..\packages\cef.redist.x64.3.3325.1758\build\cef.redist.x64.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
@@ -96,9 +96,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>references\DotNetZip.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Win32.TaskScheduler, Version=2.8.5.0, Culture=neutral, PublicKeyToken=c416bc1b32d97233, processorArchitecture=MSIL">
+    <Reference Include="Microsoft.Win32.TaskScheduler, Version=2.8.1.0, Culture=neutral, PublicKeyToken=c416bc1b32d97233, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\TaskScheduler.2.8.5\lib\net452\Microsoft.Win32.TaskScheduler.dll</HintPath>
+      <HintPath>..\packages\TaskScheduler.2.8.1\lib\net452\Microsoft.Win32.TaskScheduler.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="MSIAfterburner.NET, Version=1.1.1.0, Culture=neutral, processorArchitecture=MSIL">
@@ -247,11 +247,11 @@
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\cef.redist.x64.3.3325.1758\build\cef.redist.x64.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\cef.redist.x64.3.3325.1758\build\cef.redist.x64.props'))" />
     <Error Condition="!Exists('..\packages\cef.redist.x86.3.3325.1758\build\cef.redist.x86.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\cef.redist.x86.3.3325.1758\build\cef.redist.x86.props'))" />
-    <Error Condition="!Exists('..\packages\CefSharp.Common.65.0.1\build\CefSharp.Common.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\CefSharp.Common.65.0.1\build\CefSharp.Common.props'))" />
-    <Error Condition="!Exists('..\packages\CefSharp.Common.65.0.1\build\CefSharp.Common.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\CefSharp.Common.65.0.1\build\CefSharp.Common.targets'))" />
-    <Error Condition="!Exists('..\packages\CefSharp.WinForms.65.0.1\build\CefSharp.WinForms.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\CefSharp.WinForms.65.0.1\build\CefSharp.WinForms.props'))" />
-    <Error Condition="!Exists('..\packages\CefSharp.WinForms.65.0.1\build\CefSharp.WinForms.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\CefSharp.WinForms.65.0.1\build\CefSharp.WinForms.targets'))" />
+    <Error Condition="!Exists('..\packages\CefSharp.Common.65.0.0\build\CefSharp.Common.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\CefSharp.Common.65.0.0\build\CefSharp.Common.props'))" />
+    <Error Condition="!Exists('..\packages\CefSharp.Common.65.0.0\build\CefSharp.Common.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\CefSharp.Common.65.0.0\build\CefSharp.Common.targets'))" />
+    <Error Condition="!Exists('..\packages\CefSharp.WinForms.65.0.0\build\CefSharp.WinForms.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\CefSharp.WinForms.65.0.0\build\CefSharp.WinForms.props'))" />
+    <Error Condition="!Exists('..\packages\CefSharp.WinForms.65.0.0\build\CefSharp.WinForms.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\CefSharp.WinForms.65.0.0\build\CefSharp.WinForms.targets'))" />
   </Target>
-  <Import Project="..\packages\CefSharp.Common.65.0.1\build\CefSharp.Common.targets" Condition="Exists('..\packages\CefSharp.Common.65.0.1\build\CefSharp.Common.targets')" />
-  <Import Project="..\packages\CefSharp.WinForms.65.0.1\build\CefSharp.WinForms.targets" Condition="Exists('..\packages\CefSharp.WinForms.65.0.1\build\CefSharp.WinForms.targets')" />
+  <Import Project="..\packages\CefSharp.Common.65.0.0\build\CefSharp.Common.targets" Condition="Exists('..\packages\CefSharp.Common.65.0.0\build\CefSharp.Common.targets')" />
+  <Import Project="..\packages\CefSharp.WinForms.65.0.0\build\CefSharp.WinForms.targets" Condition="Exists('..\packages\CefSharp.WinForms.65.0.0\build\CefSharp.WinForms.targets')" />
 </Project>
