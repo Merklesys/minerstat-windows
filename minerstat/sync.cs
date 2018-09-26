@@ -237,8 +237,21 @@ namespace minerstat
                             //wclient.OnOpen += (ss, ee) => Program.NewMessage("connect: " + host, "");
                             wclient.OnError += (ss, ee) =>
                             {
-                                Program.NewMessage(ee.Message, "");
-                                wclient.Close();
+                                Program.NewMessage("NOTICE => Socket error, switch back to HTTPS", "");
+                                Program.NewMessage("SOCKET => " + ee.Message, "");
+                                if (!ee.Message.Contains("occurred"))
+                                {
+                                    wclient.Close();
+                                }
+                                var postValue = new Dictionary<string, string>
+                                {
+                                    { "minerData", apiResponse },
+                                    { "hwData", apiHardware },
+                                    { "cpuData", apiCpu }
+                                };
+                                var content = new FormUrlEncodedContent(postValue);
+                                postAsync(content, ramCount);
+
                             };
                             wclient.OnMessage += (ss, ee) =>
                             {
@@ -288,6 +301,32 @@ namespace minerstat
             {
                 Program.NewMessage("ERROR => " + error.ToString(), "");
             }
+        }
+
+        async public static void postAsync(FormUrlEncodedContent content, string ramCount)
+        {
+            try
+            {
+                var response = await client.PostAsync("https://api.minerstat.com/v2/set_node_config.php?token=" + Program.token + "&worker=" + Program.worker + "&miner=" + mining.minerDefault.ToLower() + "&ver=" + Assembly.GetExecutingAssembly().GetName().Version.ToString() + "&cpuu=" + mining.minerCpu + "&cpud=HASH" + "&os=win" + "&algo=&best=&space=" + modules.GetTotalFreeSpace("C") / 1000000 + "&freemem=" + ramCount + "&localip=" + modules.GetLocalIPAddress() + "&remoteip=" + modules.GetUserIP() + "&currentcpu=" + mining.cpuDefault.ToLower(), content);
+                var responseString = await response.Content.ReadAsStringAsync();
+                try
+                {
+                    int package = (apiHardware.Length + apiResponse.Length + apiCpu.Length) * sizeof(Char);
+                    modules.updateTraffic(package);
+                    Program.NewMessage("SYNC (HTTPS) => API Updated  [ ~ " + (package / 1000) + " KB ]", "INFO");
+                }
+                catch (Exception)
+                {
+                    Program.NewMessage("SYNC (HTTPS) => API Updated  [ ~ 1 KB ]", "INFO");
+                    modules.updateTraffic(1);
+                }
+
+                if (!responseString.Equals(""))
+                {
+                    Program.NewMessage("REMOTE COMMAND => " + responseString, "");
+                    RemoteCommand(responseString);
+                }
+            } catch (Exception) { }
         }
 
         async public static void RemoteCommand(string command)

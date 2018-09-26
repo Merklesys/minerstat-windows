@@ -127,7 +127,7 @@ namespace minerstat {
                 watchDogFailover = 0;
 
                 // Initalize Syncing
-                syncLoop = new System.Timers.Timer(TimeSpan.FromSeconds(15).TotalMilliseconds); // set the time (0.5 min in this case)
+                syncLoop = new System.Timers.Timer(TimeSpan.FromSeconds(17).TotalMilliseconds); // set the time (18 sec in this case)
                 syncLoop.AutoReset = true;
                 syncLoop.Elapsed += new System.Timers.ElapsedEventHandler(sync.loop);
 

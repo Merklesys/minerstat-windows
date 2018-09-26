@@ -312,29 +312,45 @@ namespace minerstat
                 {
 
                     // ECHO  WORK IN PROGRESS
-                    Program.NewMessage("INFO => Preparing to download new version of: " + minerDefault.ToLower(), "");
+                    Program.NewMessage("INFO => Download new version of: " + minerDefault.ToLower(), "");
 
-                    // DELETE ALL FILES
-                    System.IO.DirectoryInfo di = new DirectoryInfo(Program.currentDir + "/clients/");
-
-                    foreach (FileInfo file in di.GetFiles())
+                    if (!localMinerVersion.Equals(minerVersion) && localMinerVersion != "0")
                     {
-                        file.Delete();
-                    }
-                    foreach (DirectoryInfo dir in di.GetDirectories())
-                    {
-                        dir.Delete(true);
-                    }
+                        try
+                        {
+                            // DELETE ALL FILES
+                            System.IO.DirectoryInfo di = new DirectoryInfo(Program.currentDir + "/clients/" + minerDefault.ToLower() + "/");
 
-                    await Task.Delay(1000);
+                            foreach (FileInfo file in di.GetFiles())
+                            {
+                                file.Delete();
+                            }
+                            foreach (DirectoryInfo dir in di.GetDirectories())
+                            {
+                                dir.Delete(true);
+                            }
 
-                    Directory.Delete(Program.currentDir + "/clients", true);
+                            await Task.Delay(1000);
+
+                            Directory.Delete(Program.currentDir + "/clients/" + minerDefault.ToLower(), true);
+
+                            await Task.Delay(1000);
+
+                            if (!Directory.Exists(Program.currentDir + "/clients/" + minerDefault.ToLower()))
+                            {
+                                Directory.CreateDirectory(Program.currentDir + "/clients/" + minerDefault.ToLower());
+                            }
+
+                        }
+                        catch (Exception) { }
+
+                    }
 
                     await Task.Delay(500);
 
-                    if (!Directory.Exists(Program.currentDir + "/clients/" + minerDefault.ToLower() + "/"))
+                    if (!Directory.Exists(Program.currentDir + "/clients/" + minerDefault.ToLower()))
                     {
-                        Directory.CreateDirectory(Program.currentDir + "/clients/" + minerDefault.ToLower() + "/");
+                        Directory.CreateDirectory(Program.currentDir + "/clients/" + minerDefault.ToLower());
                     }
 
                     Downloader.minerVersion = minerVersion;

@@ -84,7 +84,21 @@ namespace minerstat {
                     Program.syncLoop.Stop();
                     // DELETE BUGGED CLIENTS FOLDER
                     await Task.Delay(2000);
-                    Directory.Delete("clients", true);
+                    // DELETE ALL FILES
+                    System.IO.DirectoryInfo di = new DirectoryInfo(Program.currentDir + "/clients/");
+
+                    foreach (FileInfo file in di.GetFiles())
+                    {
+                        file.Delete();
+                    }
+                    foreach (DirectoryInfo dir in di.GetDirectories())
+                    {
+                        dir.Delete(true);
+                    }
+
+                    await Task.Delay(1000);
+
+                    Directory.Delete(Program.currentDir + "/clients", true);
                     // START MINING
                     await Task.Delay(4000);
                     Program.SyncStatus = false;
@@ -102,6 +116,10 @@ namespace minerstat {
             async private static void DoSomethingOnFinish(object sender, AsyncCompletedEventArgs e) {
 
    try {
+                if (!Directory.Exists(Program.currentDir + "/clients/" + mining.minerDefault.ToLower()))
+                {
+                    Directory.CreateDirectory(Program.currentDir + "/clients/" + mining.minerDefault.ToLower());
+                }
 
                 File.WriteAllText(Directory.GetCurrentDirectory() + "/clients/" + fileNameReal.ToLower() + "/minerVersion.txt", minerVersion);
 
