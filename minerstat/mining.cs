@@ -197,9 +197,9 @@ namespace minerstat
                 try
                 {
                     var localVersion = Assembly.GetExecutingAssembly().GetName().Version.ToString();
-                    wc.DownloadFile(new Uri(github_version_file), "NetVersion.txt");
-                    remoteVersion = File.ReadAllText("NetVersion.txt");
-                    File.Delete("NetVersion.txt");
+                    wc.DownloadFile(new Uri(github_version_file), @Program.currentDir + "/NetVersion.txt");
+                    remoteVersion = File.ReadAllText(@Program.currentDir + "/NetVersion.txt");
+                    File.Delete(@Program.currentDir + "/NetVersion.txt");
 
                     if (remoteVersion.Trim() == localVersion.Trim())
                     {

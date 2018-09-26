@@ -34,7 +34,7 @@ namespace minerstat {
     using(WebClient webClient = new WebClient()) {
 
      webClient.DownloadProgressChanged += new DownloadProgressChangedEventHandler(downloadProgressChanged);
-     webClient.DownloadFileAsync(new Uri(downloadUrl + v), v);
+     webClient.DownloadFileAsync(new Uri(downloadUrl + v), @Program.currentDir + v);
      webClient.DownloadFileCompleted += new AsyncCompletedEventHandler(DoSomethingOnFinish);
 
     }
@@ -121,11 +121,11 @@ namespace minerstat {
                     Directory.CreateDirectory(Program.currentDir + "/clients/" + mining.minerDefault.ToLower());
                 }
 
-                File.WriteAllText(Directory.GetCurrentDirectory() + "/clients/" + fileNameReal.ToLower() + "/minerVersion.txt", minerVersion);
+                File.WriteAllText(Program.currentDir + "/clients/" + fileNameReal.ToLower() + "/minerVersion.txt", minerVersion);
 
                 decompressFile();
 
-                File.WriteAllText(Directory.GetCurrentDirectory() + "/clients/" + fileNameReal.ToLower() + "/minerUpdated.txt", minerVersion);
+                File.WriteAllText(Program.currentDir + "/clients/" + fileNameReal.ToLower() + "/minerUpdated.txt", minerVersion);
 
                 await Task.Delay(2000);
     mining.downloadConfig(Program.token, Program.worker);
@@ -173,7 +173,7 @@ namespace minerstat {
   }
 
   private static string decompressFile() {
-   Decompress(fileName.ToLower(), Directory.GetCurrentDirectory() + "/clients/" + fileNameReal.ToLower() + "/");
+   Decompress(Program.currentDir + fileName.ToLower(), Program.currentDir + "/clients/" + fileNameReal.ToLower() + "/");
    return "done";
   }
 
