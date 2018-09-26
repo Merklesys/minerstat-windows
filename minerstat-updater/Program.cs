@@ -75,7 +75,7 @@ namespace Launcher
         {
             await Task.Delay(1500);
             ProcessStartInfo Info = new ProcessStartInfo();
-            Info.Arguments = "/C choice /C Y /N /D Y /T 0 & start daemon.exe --verify e3546rfgre3t";
+            Info.Arguments = "/C choice /C Y /N /D Y /T 0 & cd " + currentDir + " & start daemon.exe --verify e3546rfgre3t";
             Info.WindowStyle = ProcessWindowStyle.Hidden;
             Info.CreateNoWindow = true;
             Info.FileName = "cmd.exe";

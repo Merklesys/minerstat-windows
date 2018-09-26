@@ -221,7 +221,7 @@ namespace minerstat
                 Application.Exit();
             }
             ProcessStartInfo Info = new ProcessStartInfo();
-            Info.Arguments = "/C choice /C Y /N /D Y /T 0 & start minerstat.exe";
+            Info.Arguments = "/C choice /C Y /N /D Y /T 0 & cd "+ Program.currentDir + " & start minerstat.exe";
             Info.WindowStyle = ProcessWindowStyle.Hidden;
             Info.CreateNoWindow = true;
             Info.FileName = "cmd.exe";
