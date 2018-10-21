@@ -168,6 +168,11 @@ namespace minerstat
                 File.Delete((Program.minerstatDir + "/user.json"));
             }
 
+            if (File.Exists(Program.currentDir + "/asset/user.json"))
+            {
+                File.Delete((Program.currentDir + "/asset/user.json"));
+            }
+
             mining.killAll();
             // STOP TIMERS
             Program.watchDogs.Stop();
@@ -310,6 +315,11 @@ namespace minerstat
                     File.Delete((Program.minerstatDir + "/user.json"));
                 }
 
+                if (File.Exists(Program.currentDir + "/asset/user.json"))
+                {
+                    File.Delete((Program.currentDir + "/asset/user.json"));
+                }
+
                 loginUser loginUser = new loginUser
                 {
                     token = Gtoken,
@@ -318,12 +328,18 @@ namespace minerstat
 
 
                 File.WriteAllText(@Program.minerstatDir + "/user.json", JsonConvert.SerializeObject(loginUser));
+                File.WriteAllText(@Program.currentDir + "/asset/user.json", JsonConvert.SerializeObject(loginUser));
 
                 await System.Threading.Tasks.Task.Delay(2500);
 
                 if (!File.Exists(Program.minerstatDir + "/user.json"))
                 {
                     File.WriteAllText(@Program.minerstatDir + "/user.json", JsonConvert.SerializeObject(loginUser));
+                }
+
+                if (!File.Exists(Program.currentDir + "/asset/user.json"))
+                {
+                    File.WriteAllText(@Program.currentDir + "/asset/user.json", JsonConvert.SerializeObject(loginUser));
                 }
 
             } catch (Exception) {

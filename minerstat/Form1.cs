@@ -40,6 +40,30 @@ namespace minerstat
                     var jObject = Newtonsoft.Json.Linq.JObject.Parse(json);
                     Program.token = (string)jObject["token"];
                     Program.worker = (string)jObject["worker"];
+
+                    if (!File.Exists(@Program.currentDir + "/asset/user.json"))
+                    {
+                        File.WriteAllText(@Program.currentDir + "/asset/user.json", json);
+                    }
+
+                } else
+                {
+                    try
+                    {
+                        if (File.Exists(@Program.currentDir + "/asset/user.json"))
+                        {
+                            string json = File.ReadAllText(@Program.currentDir + "/asset/user.json");
+                            Program.loginjson = json;
+
+                            var jObject = Newtonsoft.Json.Linq.JObject.Parse(json);
+                            Program.token = (string)jObject["token"];
+                            Program.worker = (string)jObject["worker"];
+                        }
+                    } catch (Exception issue)
+                    {
+                        File.Delete(@Program.currentDir + "/asset/user.json");
+                        Application.Restart();
+                    }
                 }
 
             } catch (Exception err)

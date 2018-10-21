@@ -121,13 +121,13 @@ namespace minerstat {
                 monitorport = random.Next(8600, 8700);
 
                 // Initalize Watchdog
-                watchDogs = new System.Timers.Timer(TimeSpan.FromSeconds(15).TotalMilliseconds); // set the time (15 sec in this case)
+                watchDogs = new System.Timers.Timer(TimeSpan.FromSeconds(25).TotalMilliseconds); // set the time (25 sec in this case) 
                 watchDogs.AutoReset = true;
                 watchDogs.Elapsed += new System.Timers.ElapsedEventHandler(watchDog.health);
                 watchDogFailover = 0;
 
                 // Initalize Syncing
-                syncLoop = new System.Timers.Timer(TimeSpan.FromSeconds(17).TotalMilliseconds); // set the time (18 sec in this case)
+                syncLoop = new System.Timers.Timer(TimeSpan.FromSeconds(20).TotalMilliseconds); // set the time (19 sec in this case)
                 syncLoop.AutoReset = true;
                 syncLoop.Elapsed += new System.Timers.ElapsedEventHandler(sync.loop);
 

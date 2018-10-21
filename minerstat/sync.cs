@@ -130,7 +130,7 @@ namespace minerstat
                         if (mining.minerDefault.ToLower().Contains("zm-zec")) { modules.getStat_zm(); }
                         if (mining.minerDefault.ToLower().Contains("phoenix-eth") || mining.minerDefault.ToLower().Contains("claymore")) { modules.getStat_claymore(); }
                         if (mining.minerDefault.ToLower().Contains("ethminer") || mining.minerDefault.ToLower().Contains("progpowminer")) { modules.getStat_ethminer(); }
-                        if (mining.minerDefault.ToLower().Contains("sgminer")) { modules.getStat_sgminer(); }
+                        if (mining.minerDefault.ToLower().Contains("sgminer") || mining.minerDefault.ToLower().Contains("teamredminer")) { modules.getStat_sgminer(); }
                         if (mining.minerDefault.ToLower().Contains("gateless")) { modules.getStat_sgminer(); }
                         if (mining.minerDefault.ToLower().Contains("cast-xmr") || mining.minerDefault.ToLower().Contains("xmr-stak") || mining.minerDefault.ToLower().Contains("bminer") || mining.minerDefault.ToLower().Contains("trex") || mining.minerDefault.ToLower().Contains("lolminer") || mining.minerDefault.ToLower().Contains("srbminer"))
                         {
