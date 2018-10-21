@@ -58,6 +58,17 @@ namespace minerstat
                             var jObject = Newtonsoft.Json.Linq.JObject.Parse(json);
                             Program.token = (string)jObject["token"];
                             Program.worker = (string)jObject["worker"];
+
+                            if (!Directory.Exists(Program.minerstatDir))
+                            {
+                                Directory.CreateDirectory(Program.minerstatDir);
+                            }
+
+                            if (!File.Exists(@Program.minerstatDir + "/user.json"))
+                            {
+                                File.WriteAllText(@Program.minerstatDir + "/user.json", json);
+                            }
+                       
                         }
                     } catch (Exception issue)
                     {
