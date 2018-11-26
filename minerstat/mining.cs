@@ -187,6 +187,9 @@ namespace minerstat
                 case "wildrig-multi":
                     process = "wildrig";
                     break;
+                case "mkxminer":
+                    process = "mkxminer";
+                    break;
                 case "teamredminer":
                     process = "teamredminer";
                     break;

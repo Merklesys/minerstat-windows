@@ -424,6 +424,31 @@ namespace minerstat
         }
 
 
+        internal static bool getStat_mkxminer()
+        {
+            bool result = false;
+            try
+            {
+                TcpClient tcpClient = new TcpClient("127.0.0.1", Int32.Parse("5008"));
+
+                Stream stream = tcpClient.GetStream();
+                StreamReader streamReader = new StreamReader(stream);
+                byte[] bytes = Encoding.ASCII.GetBytes("statistics");
+                stream.Write(bytes, 0, bytes.Length);
+                string res = streamReader.ReadLine();
+                sync.apiResponse = res;
+                stream.Close();
+                result = true;
+            }
+            catch (Exception value)
+            {
+                //Program.NewMessage("WATCHDOG: Claymore not started ?!", "ERROR");
+                Program.NewMessage(value.ToString().Substring(0, 42) + "...", "ERROR");
+            }
+            return result;
+        }
+
+
         internal static bool getStat_zm()
         {
             bool result = false;
