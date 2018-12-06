@@ -133,7 +133,7 @@ namespace minerstat
                         if (mining.minerDefault.ToLower().Contains("mkxminer")) { modules.getStat_mkxminer(); }
                         if (mining.minerDefault.ToLower().Contains("sgminer") || mining.minerDefault.ToLower().Contains("teamredminer")) { modules.getStat_sgminer(); }
                         if (mining.minerDefault.ToLower().Contains("gateless")) { modules.getStat_sgminer(); }
-                        if (mining.minerDefault.ToLower().Contains("cast-xmr") || mining.minerDefault.ToLower().Contains("xmr-stak") || mining.minerDefault.ToLower().Contains("bminer") || mining.minerDefault.ToLower().Contains("trex") || mining.minerDefault.ToLower().Contains("lolminer") || mining.minerDefault.ToLower().Contains("srbminer"))
+                        if (mining.minerDefault.ToLower().Contains("cast-xmr") || mining.minerDefault.ToLower().Contains("xmr-stak") || mining.minerDefault.ToLower().Contains("bminer") || mining.minerDefault.ToLower().Contains("trex") || mining.minerDefault.ToLower().Contains("lolminer") || mining.minerDefault.ToLower().Contains("srbminer") || mining.minerDefault.ToLower().Contains("xmrig-amd") || mining.minerDefault.ToLower().Contains("wildrig-multi"))
                         {
 
                             string input;
